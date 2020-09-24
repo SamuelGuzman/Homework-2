@@ -1,0 +1,200 @@
+---
+title: "Homework 2 Markdown"
+author: "Samuel Guzman"
+date: "9/23/2020"
+output: html_document
+---
+1a. Load the library palmerpenguins after installing it.
+```{r first_chunk}
+# install.packages("palmerpenguins") # To install
+library(palmerpenguins)
+```
+1b. Show the head of the dataset penguins.
+```{r second_chunk}
+head(penguins)
+```
+1c. What do you learn by using str() and summary() on penguins()?
+```{r third_chunk}
+str(penguins)
+```
+When using str(), we learn that the data is sorted in the categories of species, island, bill length, bill depth, flipper length, body mass (g), sex, and year. We learn a little about the nature of the data, for instance, species has three levels including "Adelie" and "Chinstrap". I assume there is a third that is not shown. The names of the islands are also there. We also see some of the data values within each category.
+```{r fourth_chunk}
+summary(penguins)
+```
+When using summary() it summarizes the data in key ways. In species, island, and sex, it seems to simply sum up the data within each category. Under species, I think this means that there are 152 instances of Adelie penguin species, 68 instances of Chinstrap species, and 124 instances of Gentoo species. In island, there are 168 instances of Biscoe Island, 124 instances of Dream Island, and 52 instances of Torgersen Island. The sex column follows the same principle. The other columns are more complex but show Min, 1st Quartile, Median, Mean, 3rd Quartile, Max, and NA.
+
+1d. What are the quantiles of bill depth across the whole data set? What do those quantiles mean?
+
+The quantiles of bill depth across the whole dataset are 1st Quartile:15.60, Median (2nd Quartile): 17.30, and 3rd Quartile:18.70. This is shown in the summary data. The quantiles can be used to construct a boxplot. Also, median means that half of the data values are higher than this number and half are lower. 1st Quartile means that 1/4 are lower and 3/4 are higher. 3rd quartile means that 3/4 are lower and 1/4 are higher.
+
+2a. If I have a vector, c(1,4,7,NA,9), what is its mean? Note, the NA is going to cause a problem. Look at ?mean to learn how to solve it.
+
+```{r fifth_chunk}
+#mean(c(1,4,7,NA,9)) #First attempt. Just like the question says, there is an issue. This just returns NA. 
+# I visited the help info at ?mean. Apparently there is an argument, na.rm, which "[indicates] whether NA values should be stripped before the computation proceeds.
+# Setting this to TRUE seems to work.
+
+mean(c(1,4,7,NA,9), na.rm = TRUE)
+```
+
+2b. What is the mean, sd, and median of body mass across the data set? Note, these NAs are going to cause some problems, so you might need to look at the documentation for the relevant functions.
+
+```{r sixth_chunk}
+# mean of body mass
+# mean(penguins$body_mass_g) #First attempt. #body mass is in the class $body_mass_g. Once again there is the NA issue but it can be resolved the same way as 2a.
+mean(penguins$body_mass_g, na.rm = TRUE) # This produces a value.
+
+# sd of body mass
+# sd(penguins$body_mass_g) #First attempt. This returns NA. 
+# I examined ?sd and once again there is na.rm which may work.
+sd(penguins$body_mass_g, na.rm = TRUE) # This produces a value.
+
+# median of body mass
+# median(penguins$body_mass_g) #First attempt This returns NA
+# I examined ?median and na.rm is listed
+median(penguins$body_mass_g, na.rm = TRUE) # This produces a value.
+```
+
+2c. Repeat 2b, but, show us how these quantities differ by species
+```{r seventh_chunk}
+# We need to calculate  mean, sd, median values for each species
+# The data may already be grouped by species. Just to make sure, however:
+# group_by(species) #This is what I tried. I don't know how to do this part correctly.
+# All of the body_mass_g values are listed, but different subsets represent the species. I determined the subset from summary()
+
+mean(penguins$body_mass_g[1:152], na.rm = TRUE) #Adelie mean
+sd(penguins$body_mass_g[1:152], na.rm = TRUE) #Adelie sd
+median(penguins$body_mass_g[1:152], na.rm = TRUE) #Adelie median
+
+mean(penguins$body_mass_g[153:(152+68)], na.rm = TRUE) #Chinstrap mean 
+sd(penguins$body_mass_g[153:(152+68)], na.rm = TRUE) #Chinstrap sd
+median(penguins$body_mass_g[153:(152+68)], na.rm = TRUE) #Chinstrap median
+
+mean(penguins$body_mass_g[(152+68+1):(152+68+124)], na.rm = TRUE) #Gentoo mean
+sd(penguins$body_mass_g[(152+68+1):(152+68)], na.rm = TRUE) #Gentoo sd
+median(penguins$body_mass_g[(152+68+1):(152+68)], na.rm = TRUE) #Gentoo median
+
+```
+
+2d. Repeat 2c, but just for Biscoe island. What is different in the results?
+```{r eighth_chunk}
+# One should follow the same steps from 2c, but the data must be grouped differently according to Islands. Then one should determine the range of values for the Biscoe Island subset of the body mass data.
+#group_by(island) #I don't know how to do the grouping.
+
+```
+
+2E Make a species-island column in penguins using paste(). This is an awesome function that takes multiple strings, and slams them together using the argument sep = to define how the string should be combined. Try out paste("Hello", "Goodbye", sep = "! ") to see how it works. Have the two be separated by _.
+
+paste("Hello", "Goodbye", sep = "! ")
+
+```{r ninth_chunk}
+
+paste("Hello", "Goodbye", sep = "! ") #Trying out paste()
+
+paste(penguins$species, penguins$island, sep = "_")
+
+```
+
+3a. Show the distribution of flipper_length_mm by species and island using boxplots. For one point of extra credit, redo creating the species_island column with the sep as \n instead of _. What does \n do? You will find it very handy in the future.
+
+By species:
+```{r tenth_chunk}
+
+boxplot(penguins$flipper_length_mm[1:152]) #Adelie Flipper Length Box Plot
+
+boxplot(penguins$flipper_length_mm[153:(152+68)]) #Chinstrap Flipper Length Box Plot
+
+boxplot(penguins$flipper_length_mm[(152+68+1):(152+68)]) #Gentoo Flipper Length Box Plot
+
+```
+
+By island:
+
+```{r eleventh_chunk}
+
+# It is the same as before, however one would need to group the data according to island and then do subsets for each island.
+#group_by(island) #I don't know how to do the grouping.
+
+```
+
+For EC:
+
+```{r twelth_chunk}
+
+paste(penguins$species, penguins$island, sep = "\n") #It does not seem to do anything special. It just adds \n in between.
+
+```
+
+3b. Show the relationship between average flipper length and average body mass by species and island. What do you see?
+
+```{r thirteenth_chunk}
+
+# Relationship between avg flipper length and avg body mass for Adelie Species.
+# An easy way to see the relationship is with a scatterplot.
+# I interpret the question to mean that each species is assosiated with an average flipper length and an average body masss. I would then plot the 3 data points on a scatterplot (x axis: flipper length) and (y axis: body mass) and examine the relationship
+
+# Average body mass Adelie: 3700.662
+# Average body mass Chinstrap: 5017.647
+# Average body mass Gentoo: 4365.854
+
+# Now we need to determine the average flipper length per species. This is the same code from 2c. I'm just making it a variable and putting it in the vector in the next step.
+
+adelie_flipper_mean <- mean(penguins$flipper_length_mm[1:152], na.rm = TRUE) #Adelie mean
+chinstrap_flipper_mean <- mean(penguins$flipper_length_mm[153:(152+68)], na.rm = TRUE) #Chinstrap mean 
+gentoo_flipper_mean <- mean(penguins$flipper_length_mm[(152+68+1):(152+68+124)], na.rm = TRUE) #Gentoo mean
+
+my_df <- data.frame(x = c(adelie_flipper_mean, chinstrap_flipper_mean, gentoo_flipper_mean), y = c(3700.662, 5017.647, 5017.647))
+plot(y ~ x, data = my_df)
+
+```
+
+The species assosiated with the two largest average flipper lengths have larger average body mass in comparison with the species assosiated with the lowest average flipper length. However, the former two have almost equal average body mass.
+
+```{r fourteenth_chunk}
+
+# Once again, I would have to regroup the data according to Island. I do not know how to do this.
+
+```
+
+3c. Interesting. What if you had made the same plot with the whole dataset? What do you see? Is there anything that could clarify the result any more? Think about it - lots of possible right answers here.
+
+```{r fifteenth_chunk}
+
+my_df <- data.frame(x = penguins$flipper_length_mm, y = penguins$body_mass_g)
+plot(y ~ x, data = my_df)
+
+```
+
+As flipper length increases, body mass increases. It is quite a linear relationship. While we are seeing this relationship for individual penguins, we do not see this in the prior plot (the two larger flipper lengths have almost equal body mass. This may be because one of those species of penguins has a greater proportion of the small flipper length and small body mass combination within the species even though on average the species has a large flipper length, large bodymass.
+
+4a. Grab the values for bill_length_mm for Gentoo penguins in Biscoe Island and put it into an object. Note, the dplyr function pull() is kinda cool, as if you apply it to a data frame, it will pull out a vector from a column of interest. Try mtcars %>% pull(mpg). Kinda cool. Might help you here.
+
+```{r sixteenth_chunk}
+
+#bill length for gentoo penguins is easy to obtain. It is:
+
+bill_length_gentoo <- penguins$bill_length_mm[(152+68+1):(152+68+124)] #The subset assosiated with Gentoo
+
+library(dplyr)
+library(purrr)
+mtcars %>% pull(mpg) # Using pull with mtcars
+
+#data.frame(bill_length_gentoo, penguins$island) #unequal rows of data frames, will not allow
+
+#bill_length_gentoo %>% pull(penguins$island)
+
+
+```
+
+4b. Use replicate() to calculate the standard error of the mean 10 times. Use a formula! Don’t forget that NA values shouldn’t be included!
+```{r seventeenth_chunk}
+# I assume that mean is the mean of the bill length of gentoo penguins on Biscoe Island. However, I am having trouble getting that value from the previous step. You use mean() 
+# standard error = standard dev / sqrt(n)
+# n is just 1, representing the mean itself, sqrt(1) = 1
+# any number divided by 1 is itself
+# basically this is just the standard deviation
+mean_bill_gentoo_bisco <- mean(10) #I don't know what the actual value is. This is just a filler value.
+replicate(10, sd(mean_bill_gentoo_bisco))
+
+# I might misunderstand this problem but all I am getting is 10 NA
+```
